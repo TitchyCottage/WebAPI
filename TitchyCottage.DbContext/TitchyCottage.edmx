@@ -1,0 +1,202 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="TitchyCottageModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ProductQuantity">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductID" Type="int" Nullable="false" />
+          <Property Name="Lot" Type="nvarchar" MaxLength="250" />
+          <Property Name="DateCode" Type="nvarchar" MaxLength="250" />
+          <Property Name="TotalQuantity" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="ExpiredDate" Type="datetime" Nullable="false" />
+          <Property Name="StockInQuantity" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="ShopInQuantity" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="SoldOutQuantity" Type="decimal" Precision="18" Scale="0" />
+        </EntityType>
+        <EntityType Name="Products">
+          <Key>
+            <PropertyRef Name="ProductID" />
+          </Key>
+          <Property Name="ProductID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="ProductDescription" Type="nvarchar" MaxLength="250" />
+          <Property Name="Cost" Type="decimal" Precision="18" Scale="0" />
+        </EntityType>
+        <Association Name="FK_Product">
+          <End Role="Products" Type="Self.Products" Multiplicity="1" />
+          <End Role="ProductQuantity" Type="Self.ProductQuantity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Products">
+              <PropertyRef Name="ProductID" />
+            </Principal>
+            <Dependent Role="ProductQuantity">
+              <PropertyRef Name="ProductID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="AddOrUpdateProduct" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID" Type="int" Mode="In" />
+          <Parameter Name="Name" Type="nvarchar" Mode="In" />
+          <Parameter Name="Description" Type="nvarchar" Mode="In" />
+          <Parameter Name="Cost" Type="decimal" Mode="In" />
+        </Function>
+        <Function Name="GetProductByID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="GetProducts" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <EntityContainer Name="TitchyCottageModelStoreContainer">
+          <EntitySet Name="ProductQuantity" EntityType="Self.ProductQuantity" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Products" EntityType="Self.Products" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Product" Association="Self.FK_Product">
+            <End Role="Products" EntitySet="Products" />
+            <End Role="ProductQuantity" EntitySet="ProductQuantity" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="TitchyCottageModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="ProductQuantity">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductID" Type="Int32" Nullable="false" />
+          <Property Name="Lot" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="DateCode" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="TotalQuantity" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="ExpiredDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="StockInQuantity" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="ShopInQuantity" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="SoldOutQuantity" Type="Decimal" Precision="18" Scale="0" />
+          <NavigationProperty Name="Product" Relationship="Self.FK_Product" FromRole="ProductQuantity" ToRole="Products" />
+        </EntityType>
+        <EntityType Name="Product">
+          <Key>
+            <PropertyRef Name="ProductID" />
+          </Key>
+          <Property Name="ProductID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ProductDescription" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Cost" Type="Decimal" Precision="18" Scale="0" />
+          <NavigationProperty Name="ProductQuantities" Relationship="Self.FK_Product" FromRole="Products" ToRole="ProductQuantity" />
+        </EntityType>
+        <Association Name="FK_Product">
+          <End Role="Products" Type="Self.Product" Multiplicity="1" />
+          <End Role="ProductQuantity" Type="Self.ProductQuantity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Products">
+              <PropertyRef Name="ProductID" />
+            </Principal>
+            <Dependent Role="ProductQuantity">
+              <PropertyRef Name="ProductID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="TitchyCottageEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ProductQuantities" EntityType="Self.ProductQuantity" />
+          <EntitySet Name="Products" EntityType="Self.Product" />
+          <AssociationSet Name="FK_Product" Association="Self.FK_Product">
+            <End Role="Products" EntitySet="Products" />
+            <End Role="ProductQuantity" EntitySet="ProductQuantities" />
+          </AssociationSet>
+          <FunctionImport Name="AddOrUpdateProduct" EntitySet="Products" ReturnType="Collection(TitchyCottageModel.Product)">
+            <Parameter Name="ID" Mode="In" Type="Int32" />
+            <Parameter Name="Name" Mode="In" Type="String" />
+            <Parameter Name="Description" Mode="In" Type="String" />
+            <Parameter Name="Cost" Mode="In" Type="Decimal" />
+          </FunctionImport>
+          <FunctionImport Name="GetProductByID" EntitySet="Products" ReturnType="Collection(TitchyCottageModel.Product)">
+          <Parameter Name="ID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="GetProducts" EntitySet="Products" ReturnType="Collection(TitchyCottageModel.Product)" />
+        </EntityContainer>
+        <ComplexType Name="GetProductByID_Result">
+          <Property Type="Int32" Name="ProductID" Nullable="false" />
+          <Property Type="String" Name="ProductName" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="ProductDescription" Nullable="true" MaxLength="250" />
+          <Property Type="Decimal" Name="Cost" Nullable="true" Precision="18" Scale="0" />
+        </ComplexType>
+        <ComplexType Name="GetProducts_Result">
+          <Property Type="Int32" Name="ProductID" Nullable="false" />
+          <Property Type="String" Name="ProductName" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="ProductDescription" Nullable="true" MaxLength="250" />
+          <Property Type="Decimal" Name="Cost" Nullable="true" Precision="18" Scale="0" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="TitchyCottageModelStoreContainer" CdmEntityContainer="TitchyCottageEntities">
+          <EntitySetMapping Name="ProductQuantities">
+            <EntityTypeMapping TypeName="TitchyCottageModel.ProductQuantity">
+              <MappingFragment StoreEntitySet="ProductQuantity">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="Lot" ColumnName="Lot" />
+                <ScalarProperty Name="DateCode" ColumnName="DateCode" />
+                <ScalarProperty Name="TotalQuantity" ColumnName="TotalQuantity" />
+                <ScalarProperty Name="ExpiredDate" ColumnName="ExpiredDate" />
+                <ScalarProperty Name="StockInQuantity" ColumnName="StockInQuantity" />
+                <ScalarProperty Name="ShopInQuantity" ColumnName="ShopInQuantity" />
+                <ScalarProperty Name="SoldOutQuantity" ColumnName="SoldOutQuantity" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Products">
+            <EntityTypeMapping TypeName="TitchyCottageModel.Product">
+              <MappingFragment StoreEntitySet="Products">
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+                <ScalarProperty Name="ProductDescription" ColumnName="ProductDescription" />
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+              </MappingFragment>
+            </EntityTypeMapping>
+            <EntityTypeMapping TypeName="TitchyCottageModel.Product">
+              <ModificationFunctionMapping>
+                <InsertFunction FunctionName="TitchyCottageModel.Store.AddOrUpdateProduct" >
+                  <ScalarProperty Name="Cost" ParameterName="Cost" />
+                  <ScalarProperty Name="ProductDescription" ParameterName="Description" />
+                  <ScalarProperty Name="ProductName" ParameterName="Name" />
+                  <ScalarProperty Name="ProductID" ParameterName="ID" />
+                  <ResultBinding Name="ProductID" ColumnName="ProductID" />
+                </InsertFunction>
+              </ModificationFunctionMapping>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="AddOrUpdateProduct" FunctionName="TitchyCottageModel.Store.AddOrUpdateProduct" />
+          <FunctionImportMapping FunctionImportName="GetProductByID" FunctionName="TitchyCottageModel.Store.GetProductByID">
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetProducts" FunctionName="TitchyCottageModel.Store.GetProducts">
+          </FunctionImportMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
