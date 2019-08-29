@@ -106,7 +106,7 @@
             <End Role="Products" EntitySet="Products" />
             <End Role="ProductQuantity" EntitySet="ProductQuantities" />
           </AssociationSet>
-          <FunctionImport Name="AddOrUpdateProduct" EntitySet="Products" ReturnType="Collection(TitchyCottageModel.Product)">
+          <FunctionImport Name="AddOrUpdateProduct">
             <Parameter Name="ID" Mode="In" Type="Int32" />
             <Parameter Name="Name" Mode="In" Type="String" />
             <Parameter Name="Description" Mode="In" Type="String" />
@@ -166,7 +166,6 @@
                   <ScalarProperty Name="ProductDescription" ParameterName="Description" />
                   <ScalarProperty Name="ProductName" ParameterName="Name" />
                   <ScalarProperty Name="ProductID" ParameterName="ID" />
-                  <ResultBinding Name="ProductID" ColumnName="ProductID" />
                 </InsertFunction>
               </ModificationFunctionMapping>
             </EntityTypeMapping>

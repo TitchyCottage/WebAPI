@@ -7,6 +7,7 @@ using System.Web.Http;
 
 namespace TitchyCottage.Api.Controllers
 {
+    [RoutePrefix("api/Values")]
     public class ValuesController : ApiController
     {
         // GET api/values
@@ -34,6 +35,12 @@ namespace TitchyCottage.Api.Controllers
         // DELETE api/values/5
         public void Delete(int id)
         {
+        }
+
+        [Route("Gokul")]
+        public string Gokul()
+        {
+            return "Gokul";
         }
     }
 }

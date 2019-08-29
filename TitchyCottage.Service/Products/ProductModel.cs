@@ -14,6 +14,6 @@ namespace TitchyCottage.Service.Products
         public string ProductName { get; set; }
         [MaxLength(250)]
         public string ProductDescription { get; set; }
-        public decimal Cost { get; set; }
+        public decimal? Cost { get; set; }
     }
 }

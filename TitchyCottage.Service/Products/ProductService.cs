@@ -19,16 +19,11 @@ namespace TitchyCottage.Service.Products
             {
                 using (var context = new TitchyCottageEntities())
                 {
-                    Product student = new Product() {
-                        ProductID = product.ProductID,
-                        ProductName = product.ProductName,
-                        ProductDescription = product.ProductDescription  ,
-                        Cost = product.Cost
-                    };
 
-                    context.Products.Add(student);
-                    //will execute sp_InsertStudentInfo 
-                    context.SaveChanges();
+                    context.AddOrUpdateProduct(product.ProductID, product.ProductName, product.ProductDescription, product.Cost);
+                    //context.Products.Add(student);
+                    ////will execute sp_InsertStudentInfo 
+                    //context.SaveChanges();
 
                     //student.StudentName = "Edit student using SP";
                     ////will execute sp_UpdateStudent
@@ -43,7 +38,7 @@ namespace TitchyCottage.Service.Products
             }
             catch(Exception ex)
             {
-                result.Message = "ex.Message";
+                result.Message = ex.Message;
                 result.success = false;
                 logger.Error(ex.Message);
             }
@@ -65,7 +60,8 @@ namespace TitchyCottage.Service.Products
                     {
                         ProductID = product.ProductID,
                         ProductName = product.ProductName,
-                        ProductDescription = product.ProductDescription
+                        ProductDescription = product.ProductDescription,
+                        Cost =product.Cost
                     };
                     result.success = true;
                 }
