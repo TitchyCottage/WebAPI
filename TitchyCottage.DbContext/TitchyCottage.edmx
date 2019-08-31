@@ -18,6 +18,11 @@
           <Property Name="StockInQuantity" Type="decimal" Precision="18" Scale="0" />
           <Property Name="ShopInQuantity" Type="decimal" Precision="18" Scale="0" />
           <Property Name="SoldOutQuantity" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="ManufacturerDate" Type="datetime" />
+          <Property Name="Createdby" Type="varchar" MaxLength="50" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="ModifiedBy" Type="varchar" MaxLength="50" />
+          <Property Name="ModifiedDate" Type="datetime" />
         </EntityType>
         <EntityType Name="Products">
           <Key>
@@ -27,6 +32,55 @@
           <Property Name="ProductName" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="ProductDescription" Type="nvarchar" MaxLength="250" />
           <Property Name="Cost" Type="decimal" Precision="18" Scale="0" />
+        </EntityType>
+        <EntityType Name="ProductTransactionHistory">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductID" Type="int" />
+          <Property Name="ProductQuantityID" Type="bigint" />
+          <Property Name="Quantity" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="IsCredited" Type="bit" />
+          <Property Name="IsDebited" Type="bit" />
+          <Property Name="Description" Type="varchar" MaxLength="150" Nullable="false" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="varchar" MaxLength="50" />
+          <Property Name="ModifiedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="ShopTransaction">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ShopID" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="ProductID" Type="int" />
+          <Property Name="ProductQuantityID" Type="bigint" />
+          <Property Name="TotalQuantity" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="StockInQuantity" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="varchar" MaxLength="50" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="SoldOutQuantity" Type="decimal" Precision="18" Scale="0" />
+        </EntityType>
+        <EntityType Name="ShopTransactionHistory">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ShopID" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="ProductID" Type="int" />
+          <Property Name="ProductQuantityID" Type="bigint" />
+          <Property Name="Quantity" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="IsCredited" Type="bit" />
+          <Property Name="IsDebited" Type="bit" />
+          <Property Name="Description" Type="varchar" MaxLength="150" Nullable="false" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="varchar" MaxLength="50" />
+          <Property Name="ModifiedDate" Type="datetime" />
         </EntityType>
         <Association Name="FK_Product">
           <End Role="Products" Type="Self.Products" Multiplicity="1" />
@@ -40,22 +94,126 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ProductTransactionhistory_ID">
+          <End Role="ProductQuantity" Type="Self.ProductQuantity" Multiplicity="0..1" />
+          <End Role="ProductTransactionHistory" Type="Self.ProductTransactionHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductQuantity">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ProductTransactionHistory">
+              <PropertyRef Name="ProductQuantityID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShopTransaction">
+          <End Role="ProductQuantity" Type="Self.ProductQuantity" Multiplicity="0..1" />
+          <End Role="ShopTransaction" Type="Self.ShopTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductQuantity">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ShopTransaction">
+              <PropertyRef Name="ProductQuantityID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShopTransactionhistory_ID">
+          <End Role="ProductQuantity" Type="Self.ProductQuantity" Multiplicity="0..1" />
+          <End Role="ShopTransactionHistory" Type="Self.ShopTransactionHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductQuantity">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ShopTransactionHistory">
+              <PropertyRef Name="ProductQuantityID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Function Name="AddOrUpdateProduct" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ID" Type="int" Mode="In" />
           <Parameter Name="Name" Type="nvarchar" Mode="In" />
           <Parameter Name="Description" Type="nvarchar" Mode="In" />
           <Parameter Name="Cost" Type="decimal" Mode="In" />
         </Function>
+        <Function Name="AddOrUpdateProductQuantity" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID" Type="bigint" Mode="In" />
+          <Parameter Name="ProductID" Type="int" Mode="In" />
+          <Parameter Name="Lot" Type="varchar" Mode="In" />
+          <Parameter Name="DateCode" Type="varchar" Mode="In" />
+          <Parameter Name="TotalQuantity" Type="decimal" Mode="In" />
+          <Parameter Name="ExpiredDate" Type="datetime" Mode="In" />
+          <Parameter Name="ManufacturerDate" Type="datetime" Mode="In" />
+          <Parameter Name="CreatedBy" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="AddOrUpdateShopTransaction" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID" Type="bigint" Mode="In" />
+          <Parameter Name="ShopID" Type="varchar" Mode="In" />
+          <Parameter Name="ProductID" Type="int" Mode="In" />
+          <Parameter Name="ProductQuantityID" Type="bigint" Mode="In" />
+          <Parameter Name="Quantity" Type="decimal" Mode="In" />
+          <Parameter Name="CreatedBy" Type="varchar" Mode="In" />
+          <Parameter Name="CreatedDate" Type="datetime" Mode="In" />
+          <Parameter Name="ModifiedBy" Type="varchar" Mode="In" />
+          <Parameter Name="ModifiedDate" Type="datetime" Mode="In" />
+        </Function>
+        <Function Name="AddProductTransactionHistory" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ProductID" Type="int" Mode="In" />
+          <Parameter Name="ProductQuantityID" Type="bigint" Mode="In" />
+          <Parameter Name="Quantity" Type="decimal" Mode="In" />
+          <Parameter Name="IsCredited" Type="bit" Mode="In" />
+          <Parameter Name="IsDebited" Type="bit" Mode="In" />
+          <Parameter Name="TransactionDescription" Type="varchar" Mode="In" />
+          <Parameter Name="CreatedBy" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="AddShopTransactionHistory" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ShopID" Type="varchar" Mode="In" />
+          <Parameter Name="ProductID" Type="int" Mode="In" />
+          <Parameter Name="ProductQuantityID" Type="bigint" Mode="In" />
+          <Parameter Name="Quantity" Type="decimal" Mode="In" />
+          <Parameter Name="IsCredited" Type="bit" Mode="In" />
+          <Parameter Name="IsDebited" Type="bit" Mode="In" />
+          <Parameter Name="TransactionDescription" Type="varchar" Mode="In" />
+          <Parameter Name="CreatedBy" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="CheckOutTransaction" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ShopID" Type="varchar" Mode="In" />
+          <Parameter Name="ProductID" Type="int" Mode="In" />
+          <Parameter Name="ProductQuantityID" Type="bigint" Mode="In" />
+          <Parameter Name="Quantity" Type="decimal" Mode="In" />
+          <Parameter Name="IsReturn" Type="bit" Mode="In" />
+          <Parameter Name="CreatedBy" Type="varchar" Mode="In" />
+          <Parameter Name="CreatedDate" Type="datetime" Mode="In" />
+        </Function>
         <Function Name="GetProductByID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ID" Type="int" Mode="In" />
         </Function>
+        <Function Name="GetProductQuantityByID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID" Type="int" Mode="In" />
+        </Function>
         <Function Name="GetProducts" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="GetProductsQuantity" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="TitchyCottageModelStoreContainer">
           <EntitySet Name="ProductQuantity" EntityType="Self.ProductQuantity" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Products" EntityType="Self.Products" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductTransactionHistory" EntityType="Self.ProductTransactionHistory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShopTransaction" EntityType="Self.ShopTransaction" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShopTransactionHistory" EntityType="Self.ShopTransactionHistory" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_Product" Association="Self.FK_Product">
             <End Role="Products" EntitySet="Products" />
             <End Role="ProductQuantity" EntitySet="ProductQuantity" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductTransactionhistory_ID" Association="Self.FK_ProductTransactionhistory_ID">
+            <End Role="ProductQuantity" EntitySet="ProductQuantity" />
+            <End Role="ProductTransactionHistory" EntitySet="ProductTransactionHistory" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShopTransaction" Association="Self.FK_ShopTransaction">
+            <End Role="ProductQuantity" EntitySet="ProductQuantity" />
+            <End Role="ShopTransaction" EntitySet="ShopTransaction" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShopTransactionhistory_ID" Association="Self.FK_ShopTransactionhistory_ID">
+            <End Role="ProductQuantity" EntitySet="ProductQuantity" />
+            <End Role="ShopTransactionHistory" EntitySet="ShopTransactionHistory" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -76,6 +234,14 @@
           <Property Name="ShopInQuantity" Type="Decimal" Precision="18" Scale="0" />
           <Property Name="SoldOutQuantity" Type="Decimal" Precision="18" Scale="0" />
           <NavigationProperty Name="Product" Relationship="Self.FK_Product" FromRole="ProductQuantity" ToRole="Products" />
+          <Property Name="ManufacturerDate" Type="DateTime" Precision="3" />
+          <Property Name="Createdby" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="ShopTransactions" Relationship="TitchyCottageModel.FK_ShopTransaction" FromRole="ProductQuantity" ToRole="ShopTransaction" />
+          <NavigationProperty Name="ShopTransactionHistories" Relationship="TitchyCottageModel.FK_ShopTransactionhistory_ID" FromRole="ProductQuantity" ToRole="ShopTransactionHistory" />
+          <NavigationProperty Name="ProductTransactionHistories" Relationship="TitchyCottageModel.FK_ProductTransactionhistory_ID" FromRole="ProductQuantity" ToRole="ProductTransactionHistory" />
         </EntityType>
         <EntityType Name="Product">
           <Key>
@@ -116,6 +282,74 @@
           <Parameter Name="ID" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="GetProducts" EntitySet="Products" ReturnType="Collection(TitchyCottageModel.Product)" />
+          <EntitySet Name="ProductTransactionHistories" EntityType="TitchyCottageModel.ProductTransactionHistory" />
+          <EntitySet Name="ShopTransactions" EntityType="TitchyCottageModel.ShopTransaction" />
+          <EntitySet Name="ShopTransactionHistories" EntityType="TitchyCottageModel.ShopTransactionHistory" />
+          <FunctionImport Name="AddOrUpdateProductQuantity">
+            <Parameter Name="ID" Mode="In" Type="Int64" />
+            <Parameter Name="ProductID" Mode="In" Type="Int32" />
+            <Parameter Name="Lot" Mode="In" Type="String" />
+            <Parameter Name="DateCode" Mode="In" Type="String" />
+            <Parameter Name="TotalQuantity" Mode="In" Type="Decimal" />
+            <Parameter Name="ExpiredDate" Mode="In" Type="DateTime" />
+            <Parameter Name="ManufacturerDate" Mode="In" Type="DateTime" />
+            <Parameter Name="CreatedBy" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="AddOrUpdateShopTransaction">
+            <Parameter Name="ID" Mode="In" Type="Int64" />
+            <Parameter Name="ShopID" Mode="In" Type="String" />
+            <Parameter Name="ProductID" Mode="In" Type="Int32" />
+            <Parameter Name="ProductQuantityID" Mode="In" Type="Int64" />
+            <Parameter Name="Quantity" Mode="In" Type="Decimal" />
+            <Parameter Name="CreatedBy" Mode="In" Type="String" />
+            <Parameter Name="CreatedDate" Mode="In" Type="DateTime" />
+            <Parameter Name="ModifiedBy" Mode="In" Type="String" />
+            <Parameter Name="ModifiedDate" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="AddProductTransactionHistory">
+            <Parameter Name="ProductID" Mode="In" Type="Int32" />
+            <Parameter Name="ProductQuantityID" Mode="In" Type="Int64" />
+            <Parameter Name="Quantity" Mode="In" Type="Decimal" />
+            <Parameter Name="IsCredited" Mode="In" Type="Boolean" />
+            <Parameter Name="IsDebited" Mode="In" Type="Boolean" />
+            <Parameter Name="TransactionDescription" Mode="In" Type="String" />
+            <Parameter Name="CreatedBy" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="AddShopTransactionHistory">
+            <Parameter Name="ShopID" Mode="In" Type="String" />
+            <Parameter Name="ProductID" Mode="In" Type="Int32" />
+            <Parameter Name="ProductQuantityID" Mode="In" Type="Int64" />
+            <Parameter Name="Quantity" Mode="In" Type="Decimal" />
+            <Parameter Name="IsCredited" Mode="In" Type="Boolean" />
+            <Parameter Name="IsDebited" Mode="In" Type="Boolean" />
+            <Parameter Name="TransactionDescription" Mode="In" Type="String" />
+            <Parameter Name="CreatedBy" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="CheckOutTransaction">
+            <Parameter Name="ShopID" Mode="In" Type="String" />
+            <Parameter Name="ProductID" Mode="In" Type="Int32" />
+            <Parameter Name="ProductQuantityID" Mode="In" Type="Int64" />
+            <Parameter Name="Quantity" Mode="In" Type="Decimal" />
+            <Parameter Name="IsReturn" Mode="In" Type="Boolean" />
+            <Parameter Name="CreatedBy" Mode="In" Type="String" />
+            <Parameter Name="CreatedDate" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="GetProductQuantityByID" EntitySet="ProductQuantities" ReturnType="Collection(TitchyCottageModel.ProductQuantity)">
+          <Parameter Name="ID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="GetProductsQuantity" EntitySet="ProductQuantities" ReturnType="Collection(TitchyCottageModel.ProductQuantity)" />
+          <AssociationSet Name="FK_ShopTransaction" Association="TitchyCottageModel.FK_ShopTransaction">
+            <End Role="ProductQuantity" EntitySet="ProductQuantities" />
+            <End Role="ShopTransaction" EntitySet="ShopTransactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShopTransactionhistory_ID" Association="TitchyCottageModel.FK_ShopTransactionhistory_ID">
+            <End Role="ProductQuantity" EntitySet="ProductQuantities" />
+            <End Role="ShopTransactionHistory" EntitySet="ShopTransactionHistories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductTransactionhistory_ID" Association="TitchyCottageModel.FK_ProductTransactionhistory_ID">
+            <End Role="ProductQuantity" EntitySet="ProductQuantities" />
+            <End Role="ProductTransactionHistory" EntitySet="ProductTransactionHistories" />
+          </AssociationSet>
         </EntityContainer>
         <ComplexType Name="GetProductByID_Result">
           <Property Type="Int32" Name="ProductID" Nullable="false" />
@@ -129,6 +363,118 @@
           <Property Type="String" Name="ProductDescription" Nullable="true" MaxLength="250" />
           <Property Type="Decimal" Name="Cost" Nullable="true" Precision="18" Scale="0" />
         </ComplexType>
+        <EntityType Name="ProductTransactionHistory">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductID" Type="Int32" />
+          <Property Name="ProductQuantityID" Type="Int64" />
+          <Property Name="Quantity" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="IsCredited" Type="Boolean" />
+          <Property Name="IsDebited" Type="Boolean" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="ProductQuantity" Relationship="TitchyCottageModel.FK_ProductTransactionhistory_ID" FromRole="ProductTransactionHistory" ToRole="ProductQuantity" />
+        </EntityType>
+        <EntityType Name="ShopTransaction">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ShopID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ProductID" Type="Int32" />
+          <Property Name="ProductQuantityID" Type="Int64" />
+          <Property Name="TotalQuantity" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="StockInQuantity" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="SoldOutQuantity" Type="Decimal" Precision="18" Scale="0" />
+          <NavigationProperty Name="ProductQuantity" Relationship="TitchyCottageModel.FK_ShopTransaction" FromRole="ShopTransaction" ToRole="ProductQuantity" />
+        </EntityType>
+        <EntityType Name="ShopTransactionHistory">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ShopID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ProductID" Type="Int32" />
+          <Property Name="ProductQuantityID" Type="Int64" />
+          <Property Name="Quantity" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="IsCredited" Type="Boolean" />
+          <Property Name="IsDebited" Type="Boolean" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="ProductQuantity" Relationship="TitchyCottageModel.FK_ShopTransactionhistory_ID" FromRole="ShopTransactionHistory" ToRole="ProductQuantity" />
+        </EntityType>
+        <ComplexType Name="GetProductQuantityByID_Result">
+          <Property Type="Int64" Name="ID" Nullable="false" />
+          <Property Type="Int32" Name="ProductID" Nullable="false" />
+          <Property Type="String" Name="Lot" Nullable="true" MaxLength="250" />
+          <Property Type="String" Name="DateCode" Nullable="true" MaxLength="250" />
+          <Property Type="Decimal" Name="TotalQuantity" Nullable="true" Precision="18" Scale="0" />
+          <Property Type="DateTime" Name="ExpiredDate" Nullable="false" Precision="23" />
+          <Property Type="Decimal" Name="StockInQuantity" Nullable="true" Precision="18" Scale="0" />
+          <Property Type="Decimal" Name="ShopInQuantity" Nullable="true" Precision="18" Scale="0" />
+          <Property Type="Decimal" Name="SoldOutQuantity" Nullable="true" Precision="18" Scale="0" />
+          <Property Type="DateTime" Name="ManufacturerDate" Nullable="true" Precision="23" />
+        </ComplexType>
+        <ComplexType Name="GetProductsQuantity_Result">
+          <Property Type="Int64" Name="ID" Nullable="false" />
+          <Property Type="Int32" Name="ProductID" Nullable="false" />
+          <Property Type="String" Name="Lot" Nullable="true" MaxLength="250" />
+          <Property Type="String" Name="DateCode" Nullable="true" MaxLength="250" />
+          <Property Type="Decimal" Name="TotalQuantity" Nullable="true" Precision="18" Scale="0" />
+          <Property Type="DateTime" Name="ExpiredDate" Nullable="false" Precision="23" />
+          <Property Type="Decimal" Name="StockInQuantity" Nullable="true" Precision="18" Scale="0" />
+          <Property Type="Decimal" Name="ShopInQuantity" Nullable="true" Precision="18" Scale="0" />
+          <Property Type="Decimal" Name="SoldOutQuantity" Nullable="true" Precision="18" Scale="0" />
+          <Property Type="DateTime" Name="ManufacturerDate" Nullable="true" Precision="23" />
+        </ComplexType>
+        <Association Name="FK_ShopTransaction">
+          <End Type="TitchyCottageModel.ProductQuantity" Role="ProductQuantity" Multiplicity="0..1" />
+          <End Type="TitchyCottageModel.ShopTransaction" Role="ShopTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductQuantity">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ShopTransaction">
+              <PropertyRef Name="ProductQuantityID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShopTransactionhistory_ID">
+          <End Type="TitchyCottageModel.ProductQuantity" Role="ProductQuantity" Multiplicity="0..1" />
+          <End Type="TitchyCottageModel.ShopTransactionHistory" Role="ShopTransactionHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductQuantity">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ShopTransactionHistory">
+              <PropertyRef Name="ProductQuantityID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductTransactionhistory_ID">
+          <End Type="TitchyCottageModel.ProductQuantity" Role="ProductQuantity" Multiplicity="0..1" />
+          <End Type="TitchyCottageModel.ProductTransactionHistory" Role="ProductTransactionHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductQuantity">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ProductTransactionHistory">
+              <PropertyRef Name="ProductQuantityID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -138,6 +484,11 @@
           <EntitySetMapping Name="ProductQuantities">
             <EntityTypeMapping TypeName="TitchyCottageModel.ProductQuantity">
               <MappingFragment StoreEntitySet="ProductQuantity">
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Createdby" ColumnName="Createdby" />
+                <ScalarProperty Name="ManufacturerDate" ColumnName="ManufacturerDate" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="ProductID" ColumnName="ProductID" />
                 <ScalarProperty Name="Lot" ColumnName="Lot" />
@@ -174,6 +525,67 @@
           <FunctionImportMapping FunctionImportName="GetProductByID" FunctionName="TitchyCottageModel.Store.GetProductByID">
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="GetProducts" FunctionName="TitchyCottageModel.Store.GetProducts">
+          </FunctionImportMapping>
+          <EntitySetMapping Name="ProductTransactionHistories">
+            <EntityTypeMapping TypeName="TitchyCottageModel.ProductTransactionHistory">
+              <MappingFragment StoreEntitySet="ProductTransactionHistory">
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="IsDebited" ColumnName="IsDebited" />
+                <ScalarProperty Name="IsCredited" ColumnName="IsCredited" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ProductQuantityID" ColumnName="ProductQuantityID" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShopTransactions">
+            <EntityTypeMapping TypeName="TitchyCottageModel.ShopTransaction">
+              <MappingFragment StoreEntitySet="ShopTransaction">
+                <ScalarProperty Name="SoldOutQuantity" ColumnName="SoldOutQuantity" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="StockInQuantity" ColumnName="StockInQuantity" />
+                <ScalarProperty Name="TotalQuantity" ColumnName="TotalQuantity" />
+                <ScalarProperty Name="ProductQuantityID" ColumnName="ProductQuantityID" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="ShopID" ColumnName="ShopID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShopTransactionHistories">
+            <EntityTypeMapping TypeName="TitchyCottageModel.ShopTransactionHistory">
+              <MappingFragment StoreEntitySet="ShopTransactionHistory">
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="IsDebited" ColumnName="IsDebited" />
+                <ScalarProperty Name="IsCredited" ColumnName="IsCredited" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ProductQuantityID" ColumnName="ProductQuantityID" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="ShopID" ColumnName="ShopID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="AddOrUpdateProductQuantity" FunctionName="TitchyCottageModel.Store.AddOrUpdateProductQuantity" />
+          <FunctionImportMapping FunctionImportName="AddOrUpdateShopTransaction" FunctionName="TitchyCottageModel.Store.AddOrUpdateShopTransaction" />
+          <FunctionImportMapping FunctionImportName="AddProductTransactionHistory" FunctionName="TitchyCottageModel.Store.AddProductTransactionHistory" />
+          <FunctionImportMapping FunctionImportName="AddShopTransactionHistory" FunctionName="TitchyCottageModel.Store.AddShopTransactionHistory" />
+          <FunctionImportMapping FunctionImportName="CheckOutTransaction" FunctionName="TitchyCottageModel.Store.CheckOutTransaction" />
+          <FunctionImportMapping FunctionImportName="GetProductQuantityByID" FunctionName="TitchyCottageModel.Store.GetProductQuantityByID">
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetProductsQuantity" FunctionName="TitchyCottageModel.Store.GetProductsQuantity">
           </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>

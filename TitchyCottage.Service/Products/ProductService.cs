@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TitchyCottage.DbContext;
 
 namespace TitchyCottage.Service.Products
@@ -12,6 +10,7 @@ namespace TitchyCottage.Service.Products
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
+        #region Product
         public ResultModel<ProductModel> AddOrUpdateProduct(ProductModel product)
         {
             var result = new ResultModel<ProductModel>();
@@ -103,6 +102,104 @@ namespace TitchyCottage.Service.Products
             }
             return result;
         }
+        #endregion
+
+        #region Product Quantity
+        public ResultModel<ProductModel> AddOrUpdateProductQuantity(ProductQuantityModel Qty)
+        {
+            var result = new ResultModel<ProductModel>();
+            try
+            {
+                using (var context = new TitchyCottageEntities())
+                {
+
+                    context.AddOrUpdateProductQuantity(Qty.ID, Qty.ProductID, Qty.Lot, Qty.DateCode, Qty.TotalQuantity, Qty.ExpiredDate, Qty.ManufacturerDate,Qty.CreatedBy);
+                    result.Message = string.Concat(Qty.TotalQuantity.ToString(), " ", "Quantity has been added successfully.");
+                    result.success = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Message = ex.Message;
+                result.success = false;
+                logger.Error(ex.Message);
+            }
+
+            return result;
+        }
+
+        public ResultModel<ProductQuantityModel> GetProductQuantityByProductId(int ID)
+        {
+
+            var result = new ResultModel<ProductQuantityModel>();
+            try
+            {
+                using (var context = new TitchyCottageEntities())
+                {
+                    ProductQuantity qty = context.GetProductQuantityByID(ID).FirstOrDefault();
+
+                    result.Data = new ProductQuantityModel
+                    {
+                       ID = qty.ID,
+                       DateCode = qty.DateCode,
+                       ExpiredDate = qty.ExpiredDate,
+                       Lot = qty.Lot,
+                       ManufacturerDate = qty.ManufacturerDate,
+                       ProductID = qty.ProductID,
+                       ShopInQuantity = qty.ShopInQuantity,
+                       SoldOutQuantity = qty.SoldOutQuantity,
+                       StockInQuantity = qty.ShopInQuantity,
+                       TotalQuantity = qty.TotalQuantity
+                    };
+                    result.success = true;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                result.success = false;
+                logger.Error(ex.Message);
+            }
+            return result;
+        }
+
+        public ResultListModel<ProductQuantityModel> GetProductQuantityList()
+        {
+
+            var result = new ResultListModel<ProductQuantityModel>();
+            try
+            {
+                using (var context = new TitchyCottageEntities())
+                {
+                    List<ProductQuantity> product = context.GetProductsQuantity().ToList();
+
+                    result.Data = (from qty in product
+                                   select new ProductQuantityModel
+                                   {
+                                       ID = qty.ID,
+                                       DateCode = qty.DateCode,
+                                       ExpiredDate = qty.ExpiredDate,
+                                       Lot = qty.Lot,
+                                       ManufacturerDate = qty.ManufacturerDate,
+                                       ProductID = qty.ProductID,
+                                       ShopInQuantity = qty.ShopInQuantity,
+                                       SoldOutQuantity = qty.SoldOutQuantity,
+                                       StockInQuantity = qty.ShopInQuantity,
+                                       TotalQuantity = qty.TotalQuantity
+                                   }).ToList();
+                    result.success = true;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                result.success = false;
+                logger.Error(ex.Message);
+            }
+            return result;
+        }
+
+        #endregion
 
     }
 }

@@ -8,6 +8,12 @@
         <EntityTypeShape EntityType="TitchyCottageModel.ProductQuantity" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
         <EntityTypeShape EntityType="TitchyCottageModel.Product" Width="1.5" PointX="0.75" PointY="1.5" IsExpanded="true" />
         <AssociationConnector Association="TitchyCottageModel.FK_Product" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="TitchyCottageModel.ProductTransactionHistory" Width="1.5" PointX="5.75" PointY="0.75" />
+        <EntityTypeShape EntityType="TitchyCottageModel.ShopTransaction" Width="1.5" PointX="0.75" PointY="5.75" />
+        <EntityTypeShape EntityType="TitchyCottageModel.ShopTransactionHistory" Width="1.5" PointX="2.75" PointY="5.75" />
+        <AssociationConnector Association="TitchyCottageModel.FK_ShopTransaction" />
+        <AssociationConnector Association="TitchyCottageModel.FK_ShopTransactionhistory_ID" />
+        <AssociationConnector Association="TitchyCottageModel.FK_ProductTransactionhistory_ID" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

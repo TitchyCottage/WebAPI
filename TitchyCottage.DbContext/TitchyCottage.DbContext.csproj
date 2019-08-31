@@ -54,6 +54,12 @@
     <Compile Include="GetProductByID_Result.cs">
       <DependentUpon>TitchyCottage.tt</DependentUpon>
     </Compile>
+    <Compile Include="GetProductQuantityByID_Result.cs">
+      <DependentUpon>TitchyCottage.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetProductsQuantity_Result.cs">
+      <DependentUpon>TitchyCottage.tt</DependentUpon>
+    </Compile>
     <Compile Include="GetProducts_Result.cs">
       <DependentUpon>TitchyCottage.tt</DependentUpon>
     </Compile>
@@ -63,7 +69,16 @@
     <Compile Include="ProductQuantity.cs">
       <DependentUpon>TitchyCottage.tt</DependentUpon>
     </Compile>
+    <Compile Include="ProductTransactionHistory.cs">
+      <DependentUpon>TitchyCottage.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShopTransaction.cs">
+      <DependentUpon>TitchyCottage.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ShopTransactionHistory.cs">
+      <DependentUpon>TitchyCottage.tt</DependentUpon>
+    </Compile>
     <Compile Include="TitchyCottage.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

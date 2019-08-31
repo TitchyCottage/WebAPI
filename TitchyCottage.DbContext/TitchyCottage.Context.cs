@@ -29,6 +29,9 @@ namespace TitchyCottage.DbContext
     
         public virtual DbSet<ProductQuantity> ProductQuantities { get; set; }
         public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<ProductTransactionHistory> ProductTransactionHistories { get; set; }
+        public virtual DbSet<ShopTransaction> ShopTransactions { get; set; }
+        public virtual DbSet<ShopTransactionHistory> ShopTransactionHistories { get; set; }
     
         public virtual int AddOrUpdateProduct(Nullable<int> iD, string name, string description, Nullable<decimal> cost)
         {
@@ -77,6 +80,215 @@ namespace TitchyCottage.DbContext
         public virtual ObjectResult<Product> GetProducts(MergeOption mergeOption)
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Product>("GetProducts", mergeOption);
+        }
+    
+        public virtual int AddOrUpdateProductQuantity(Nullable<long> iD, Nullable<int> productID, string lot, string dateCode, Nullable<decimal> totalQuantity, Nullable<System.DateTime> expiredDate, Nullable<System.DateTime> manufacturerDate, string createdBy)
+        {
+            var iDParameter = iD.HasValue ?
+                new ObjectParameter("ID", iD) :
+                new ObjectParameter("ID", typeof(long));
+    
+            var productIDParameter = productID.HasValue ?
+                new ObjectParameter("ProductID", productID) :
+                new ObjectParameter("ProductID", typeof(int));
+    
+            var lotParameter = lot != null ?
+                new ObjectParameter("Lot", lot) :
+                new ObjectParameter("Lot", typeof(string));
+    
+            var dateCodeParameter = dateCode != null ?
+                new ObjectParameter("DateCode", dateCode) :
+                new ObjectParameter("DateCode", typeof(string));
+    
+            var totalQuantityParameter = totalQuantity.HasValue ?
+                new ObjectParameter("TotalQuantity", totalQuantity) :
+                new ObjectParameter("TotalQuantity", typeof(decimal));
+    
+            var expiredDateParameter = expiredDate.HasValue ?
+                new ObjectParameter("ExpiredDate", expiredDate) :
+                new ObjectParameter("ExpiredDate", typeof(System.DateTime));
+    
+            var manufacturerDateParameter = manufacturerDate.HasValue ?
+                new ObjectParameter("ManufacturerDate", manufacturerDate) :
+                new ObjectParameter("ManufacturerDate", typeof(System.DateTime));
+    
+            var createdByParameter = createdBy != null ?
+                new ObjectParameter("CreatedBy", createdBy) :
+                new ObjectParameter("CreatedBy", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("AddOrUpdateProductQuantity", iDParameter, productIDParameter, lotParameter, dateCodeParameter, totalQuantityParameter, expiredDateParameter, manufacturerDateParameter, createdByParameter);
+        }
+    
+        public virtual int AddOrUpdateShopTransaction(Nullable<long> iD, string shopID, Nullable<int> productID, Nullable<long> productQuantityID, Nullable<decimal> quantity, string createdBy, Nullable<System.DateTime> createdDate, string modifiedBy, Nullable<System.DateTime> modifiedDate)
+        {
+            var iDParameter = iD.HasValue ?
+                new ObjectParameter("ID", iD) :
+                new ObjectParameter("ID", typeof(long));
+    
+            var shopIDParameter = shopID != null ?
+                new ObjectParameter("ShopID", shopID) :
+                new ObjectParameter("ShopID", typeof(string));
+    
+            var productIDParameter = productID.HasValue ?
+                new ObjectParameter("ProductID", productID) :
+                new ObjectParameter("ProductID", typeof(int));
+    
+            var productQuantityIDParameter = productQuantityID.HasValue ?
+                new ObjectParameter("ProductQuantityID", productQuantityID) :
+                new ObjectParameter("ProductQuantityID", typeof(long));
+    
+            var quantityParameter = quantity.HasValue ?
+                new ObjectParameter("Quantity", quantity) :
+                new ObjectParameter("Quantity", typeof(decimal));
+    
+            var createdByParameter = createdBy != null ?
+                new ObjectParameter("CreatedBy", createdBy) :
+                new ObjectParameter("CreatedBy", typeof(string));
+    
+            var createdDateParameter = createdDate.HasValue ?
+                new ObjectParameter("CreatedDate", createdDate) :
+                new ObjectParameter("CreatedDate", typeof(System.DateTime));
+    
+            var modifiedByParameter = modifiedBy != null ?
+                new ObjectParameter("ModifiedBy", modifiedBy) :
+                new ObjectParameter("ModifiedBy", typeof(string));
+    
+            var modifiedDateParameter = modifiedDate.HasValue ?
+                new ObjectParameter("ModifiedDate", modifiedDate) :
+                new ObjectParameter("ModifiedDate", typeof(System.DateTime));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("AddOrUpdateShopTransaction", iDParameter, shopIDParameter, productIDParameter, productQuantityIDParameter, quantityParameter, createdByParameter, createdDateParameter, modifiedByParameter, modifiedDateParameter);
+        }
+    
+        public virtual int AddProductTransactionHistory(Nullable<int> productID, Nullable<long> productQuantityID, Nullable<decimal> quantity, Nullable<bool> isCredited, Nullable<bool> isDebited, string transactionDescription, string createdBy)
+        {
+            var productIDParameter = productID.HasValue ?
+                new ObjectParameter("ProductID", productID) :
+                new ObjectParameter("ProductID", typeof(int));
+    
+            var productQuantityIDParameter = productQuantityID.HasValue ?
+                new ObjectParameter("ProductQuantityID", productQuantityID) :
+                new ObjectParameter("ProductQuantityID", typeof(long));
+    
+            var quantityParameter = quantity.HasValue ?
+                new ObjectParameter("Quantity", quantity) :
+                new ObjectParameter("Quantity", typeof(decimal));
+    
+            var isCreditedParameter = isCredited.HasValue ?
+                new ObjectParameter("IsCredited", isCredited) :
+                new ObjectParameter("IsCredited", typeof(bool));
+    
+            var isDebitedParameter = isDebited.HasValue ?
+                new ObjectParameter("IsDebited", isDebited) :
+                new ObjectParameter("IsDebited", typeof(bool));
+    
+            var transactionDescriptionParameter = transactionDescription != null ?
+                new ObjectParameter("TransactionDescription", transactionDescription) :
+                new ObjectParameter("TransactionDescription", typeof(string));
+    
+            var createdByParameter = createdBy != null ?
+                new ObjectParameter("CreatedBy", createdBy) :
+                new ObjectParameter("CreatedBy", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("AddProductTransactionHistory", productIDParameter, productQuantityIDParameter, quantityParameter, isCreditedParameter, isDebitedParameter, transactionDescriptionParameter, createdByParameter);
+        }
+    
+        public virtual int AddShopTransactionHistory(string shopID, Nullable<int> productID, Nullable<long> productQuantityID, Nullable<decimal> quantity, Nullable<bool> isCredited, Nullable<bool> isDebited, string transactionDescription, string createdBy)
+        {
+            var shopIDParameter = shopID != null ?
+                new ObjectParameter("ShopID", shopID) :
+                new ObjectParameter("ShopID", typeof(string));
+    
+            var productIDParameter = productID.HasValue ?
+                new ObjectParameter("ProductID", productID) :
+                new ObjectParameter("ProductID", typeof(int));
+    
+            var productQuantityIDParameter = productQuantityID.HasValue ?
+                new ObjectParameter("ProductQuantityID", productQuantityID) :
+                new ObjectParameter("ProductQuantityID", typeof(long));
+    
+            var quantityParameter = quantity.HasValue ?
+                new ObjectParameter("Quantity", quantity) :
+                new ObjectParameter("Quantity", typeof(decimal));
+    
+            var isCreditedParameter = isCredited.HasValue ?
+                new ObjectParameter("IsCredited", isCredited) :
+                new ObjectParameter("IsCredited", typeof(bool));
+    
+            var isDebitedParameter = isDebited.HasValue ?
+                new ObjectParameter("IsDebited", isDebited) :
+                new ObjectParameter("IsDebited", typeof(bool));
+    
+            var transactionDescriptionParameter = transactionDescription != null ?
+                new ObjectParameter("TransactionDescription", transactionDescription) :
+                new ObjectParameter("TransactionDescription", typeof(string));
+    
+            var createdByParameter = createdBy != null ?
+                new ObjectParameter("CreatedBy", createdBy) :
+                new ObjectParameter("CreatedBy", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("AddShopTransactionHistory", shopIDParameter, productIDParameter, productQuantityIDParameter, quantityParameter, isCreditedParameter, isDebitedParameter, transactionDescriptionParameter, createdByParameter);
+        }
+    
+        public virtual int CheckOutTransaction(string shopID, Nullable<int> productID, Nullable<long> productQuantityID, Nullable<decimal> quantity, Nullable<bool> isReturn, string createdBy, Nullable<System.DateTime> createdDate)
+        {
+            var shopIDParameter = shopID != null ?
+                new ObjectParameter("ShopID", shopID) :
+                new ObjectParameter("ShopID", typeof(string));
+    
+            var productIDParameter = productID.HasValue ?
+                new ObjectParameter("ProductID", productID) :
+                new ObjectParameter("ProductID", typeof(int));
+    
+            var productQuantityIDParameter = productQuantityID.HasValue ?
+                new ObjectParameter("ProductQuantityID", productQuantityID) :
+                new ObjectParameter("ProductQuantityID", typeof(long));
+    
+            var quantityParameter = quantity.HasValue ?
+                new ObjectParameter("Quantity", quantity) :
+                new ObjectParameter("Quantity", typeof(decimal));
+    
+            var isReturnParameter = isReturn.HasValue ?
+                new ObjectParameter("IsReturn", isReturn) :
+                new ObjectParameter("IsReturn", typeof(bool));
+    
+            var createdByParameter = createdBy != null ?
+                new ObjectParameter("CreatedBy", createdBy) :
+                new ObjectParameter("CreatedBy", typeof(string));
+    
+            var createdDateParameter = createdDate.HasValue ?
+                new ObjectParameter("CreatedDate", createdDate) :
+                new ObjectParameter("CreatedDate", typeof(System.DateTime));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("CheckOutTransaction", shopIDParameter, productIDParameter, productQuantityIDParameter, quantityParameter, isReturnParameter, createdByParameter, createdDateParameter);
+        }
+    
+        public virtual ObjectResult<ProductQuantity> GetProductQuantityByID(Nullable<int> iD)
+        {
+            var iDParameter = iD.HasValue ?
+                new ObjectParameter("ID", iD) :
+                new ObjectParameter("ID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ProductQuantity>("GetProductQuantityByID", iDParameter);
+        }
+    
+        public virtual ObjectResult<ProductQuantity> GetProductQuantityByID(Nullable<int> iD, MergeOption mergeOption)
+        {
+            var iDParameter = iD.HasValue ?
+                new ObjectParameter("ID", iD) :
+                new ObjectParameter("ID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ProductQuantity>("GetProductQuantityByID", mergeOption, iDParameter);
+        }
+    
+        public virtual ObjectResult<ProductQuantity> GetProductsQuantity()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ProductQuantity>("GetProductsQuantity");
+        }
+    
+        public virtual ObjectResult<ProductQuantity> GetProductsQuantity(MergeOption mergeOption)
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ProductQuantity>("GetProductsQuantity", mergeOption);
         }
     }
 }

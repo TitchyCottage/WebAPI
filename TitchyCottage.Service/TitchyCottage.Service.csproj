@@ -56,12 +56,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Products\ProductQuantityModel.cs" />
     <Compile Include="Products\ProductModel.cs" />
     <Compile Include="Products\ProductService.cs" />
     <Compile Include="Products\ProductTreeModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResultListModel.cs" />
     <Compile Include="ResultModel.cs" />
+    <Compile Include="Transaction\CheckOutRequestModel.cs" />
+    <Compile Include="Transaction\ShopTransactionModel.cs" />
+    <Compile Include="Transaction\TransactionService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TitchyCottage.DbContext\TitchyCottage.DbContext.csproj">

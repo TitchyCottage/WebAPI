@@ -184,8 +184,8 @@
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
+    <Compile Include="Controllers\TransactionController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Models\LogInModel.cs" />
     <Compile Include="Models\RegisterViewModel.cs" />
@@ -205,6 +205,7 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\TitchyCottage - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\TitchyCottageWepApi - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />

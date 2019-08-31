@@ -14,6 +14,14 @@ namespace TitchyCottage.DbContext
     
     public partial class ProductQuantity
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public ProductQuantity()
+        {
+            this.ShopTransactions = new HashSet<ShopTransaction>();
+            this.ShopTransactionHistories = new HashSet<ShopTransactionHistory>();
+            this.ProductTransactionHistories = new HashSet<ProductTransactionHistory>();
+        }
+    
         public long ID { get; set; }
         public int ProductID { get; set; }
         public string Lot { get; set; }
@@ -23,7 +31,18 @@ namespace TitchyCottage.DbContext
         public Nullable<decimal> StockInQuantity { get; set; }
         public Nullable<decimal> ShopInQuantity { get; set; }
         public Nullable<decimal> SoldOutQuantity { get; set; }
+        public Nullable<System.DateTime> ManufacturerDate { get; set; }
+        public string Createdby { get; set; }
+        public Nullable<System.DateTime> CreatedDate { get; set; }
+        public string ModifiedBy { get; set; }
+        public Nullable<System.DateTime> ModifiedDate { get; set; }
     
         public virtual Product Product { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ShopTransaction> ShopTransactions { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ShopTransactionHistory> ShopTransactionHistories { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductTransactionHistory> ProductTransactionHistories { get; set; }
     }
 }
