@@ -10,6 +10,8 @@ using System.Web;
 using System.Web.Helpers;
 using TitchyCottage.Security.Model;
 using TitchyCottage.Security.Repository;
+using TitchyCottage.Utility.Enum;
+using Type = TitchyCottage.Utility.Enum.Type;
 
 namespace TitchyCottage.Api.Providers
 {
@@ -72,7 +74,9 @@ namespace TitchyCottage.Api.Providers
                                 "FullName", string.Concat(user.FirstName, " ", user.LastName)
                             },
                             {
-                                "Roles",  Json.Encode(addRole)
+                                "Roles",  user.Roles.Any()?  (user.Roles.First().RoleId == Convert.ToString(Type.Admin) ? "Admin" :
+                               user.Roles.First().RoleId == Convert.ToString(Type.Distributor) ? "Distributor" :
+                               user.Roles.First().RoleId == Convert.ToString(Type.Retailer) ? "Retailer" :"Manufacturer" ) : ""
                             }
                         });
 

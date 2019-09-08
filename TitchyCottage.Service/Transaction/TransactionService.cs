@@ -59,5 +59,43 @@ namespace TitchyCottage.Service.Transaction
 
             return result;
         }
+
+        public ResultListModel<DistibutorDashboardResponseModel> GetShopInformationForDistibutor(DistibutorDashboardRequestModel req)
+        {
+            var result = new ResultListModel<DistibutorDashboardResponseModel>();
+            try
+            {
+                using (var context = new TitchyCottageEntities())
+                {
+
+                    var data = context.GetShopInformationForDistibutor(req.DistibutorId, req.ProductName, req.Lot, req.ExpiredDate).ToList();
+                    if (data !=null && data.Any())
+                    {
+                        result.Data = (from item in data
+                                       select new DistibutorDashboardResponseModel
+                                       {
+                                           ExpiredDate = item.ExpiredDate,
+                                           Lot = item.Lot,
+                                           ManufacturerDate = item.ManufacturerDate,
+                                           ProductName = item.ProductName,
+                                           ShopName = item.ShopName,
+                                           SoldOutQuantity = item.SoldOutQuantity,
+                                           StockInQuantity = item.StockInQuantity,
+                                           TotalQuantity = item.TotalQuantity
+                                       }
+                                        ).ToList();
+                    }
+                    result.success = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                result.success = false;
+                logger.Error(ex.Message);
+            }
+
+            return result;
+        }
+
     }
 }

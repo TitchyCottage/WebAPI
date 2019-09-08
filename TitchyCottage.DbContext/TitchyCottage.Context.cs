@@ -290,5 +290,26 @@ namespace TitchyCottage.DbContext
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ProductQuantity>("GetProductsQuantity", mergeOption);
         }
+    
+        public virtual ObjectResult<GetShopInformationForDistibutor_Result> GetShopInformationForDistibutor(string user, string productName, string lot, Nullable<System.DateTime> expiredDate)
+        {
+            var userParameter = user != null ?
+                new ObjectParameter("user", user) :
+                new ObjectParameter("user", typeof(string));
+    
+            var productNameParameter = productName != null ?
+                new ObjectParameter("productName", productName) :
+                new ObjectParameter("productName", typeof(string));
+    
+            var lotParameter = lot != null ?
+                new ObjectParameter("lot", lot) :
+                new ObjectParameter("lot", typeof(string));
+    
+            var expiredDateParameter = expiredDate.HasValue ?
+                new ObjectParameter("expiredDate", expiredDate) :
+                new ObjectParameter("expiredDate", typeof(System.DateTime));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetShopInformationForDistibutor_Result>("GetShopInformationForDistibutor", userParameter, productNameParameter, lotParameter, expiredDateParameter);
+        }
     }
 }

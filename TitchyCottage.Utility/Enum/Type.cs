@@ -10,6 +10,7 @@ namespace TitchyCottage.Utility.Enum
     {
         Admin = 1001,
         Distributor = 1002,
-        Retailer = 1003
+        Retailer = 1003,
+        Manufacturer =1004
     }
 }

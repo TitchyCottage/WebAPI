@@ -4,12 +4,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using TitchyCottage.Security.Model;
+using RoleEnum = TitchyCottage.Utility.Enum.Type;
 
 namespace TitchyCottage.Api.Models
 {
     public class RegisterViewModel
     {
-        //public string Id { get; set; }
+        public string Id { get; set; }
         //public string UserName { get; set; }
         [MaxLength(50)]
         public string FirstName { get; set; }
@@ -20,7 +21,7 @@ namespace TitchyCottage.Api.Models
         [MaxLength(50)]
         public string CurrentPassword { get; set; }
         [MaxLength(50)]
-        public string[] Roles { get; set; }
+        public string Role { get; set; }
         [MaxLength(50)]
         public string Email { get; set; }
         [MaxLength(50)]
@@ -50,7 +51,7 @@ namespace TitchyCottage.Api.Models
 
         public RegisterViewModel(ApplicationUser poco)
         {
-            //Id = poco.Id;
+            Id = poco.Id;
             //UserName = poco.UserName;
             FirstName = poco.FirstName;
             LastName = poco.LastName;
@@ -71,12 +72,14 @@ namespace TitchyCottage.Api.Models
             ModifiedBy = poco.ModifiedBy;
             ModifiedDate = poco.ModifiedDate;
 
-            var tempRole = new List<string>();
-            foreach(var role in poco.Roles)
-            {
-                tempRole.Add(role.RoleId);
-            }
-            Roles = tempRole.ToArray();
+            //var tempRole = new List<string>();
+            //foreach(var role in poco.Roles)
+            //{
+            //    tempRole.Add(role.RoleId);
+            //}
+            Role = poco.Roles.Any() ? (poco.Roles.First().RoleId == Convert.ToString((int)RoleEnum.Admin) ? "Admin" :
+                               poco.Roles.First().RoleId == Convert.ToString((int)RoleEnum.Distributor) ? "Distributor" :
+                               poco.Roles.First().RoleId == Convert.ToString((int)RoleEnum.Retailer) ? "Retailer" : "Manufacturer") : "";
 
         }
 

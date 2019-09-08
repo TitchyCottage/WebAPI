@@ -57,7 +57,7 @@ namespace TitchyCottage.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (request.Roles.Length == 0)
+            if (string.IsNullOrWhiteSpace(request.Role))
             {
                 return BadRequest("ID or Role is empty");
             }
@@ -83,12 +83,12 @@ namespace TitchyCottage.Api.Controllers
                 CreatedDate = DateTime.Now
             };
 
-            IdentityResult result = await _repo.RegisterUser(user, request.Password, request.Roles);
+            IdentityResult result = await _repo.RegisterUser(user, request.Password, request.Role);
             IHttpActionResult errorResult = GetErrorResult(result);
 
             if (errorResult != null)
             {
-                return errorResult;
+                return Ok(errorResult);
             }
 
             return Ok(result);
@@ -154,7 +154,7 @@ namespace TitchyCottage.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (request.Roles.Length ==0)
+            if (string.IsNullOrWhiteSpace(request.Role))
             {
                 return BadRequest("ID or Role is empty");
             }
@@ -181,13 +181,13 @@ namespace TitchyCottage.Api.Controllers
             };
 
 
-            IdentityResult result = await _repo.UpdateUserAsync(user, request.Roles);
+            IdentityResult result = await _repo.UpdateUserAsync(user, request.Role);
 
             IHttpActionResult errorResult = GetErrorResult(result);
 
             if (errorResult != null)
             {
-                return errorResult;
+                return Ok("");
             }
 
             return Ok(result);

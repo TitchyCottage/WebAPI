@@ -64,6 +64,7 @@
     <Compile Include="ResultListModel.cs" />
     <Compile Include="ResultModel.cs" />
     <Compile Include="Transaction\CheckOutRequestModel.cs" />
+    <Compile Include="Transaction\DistibutorDashboardRequestModel.cs" />
     <Compile Include="Transaction\ShopTransactionModel.cs" />
     <Compile Include="Transaction\TransactionService.cs" />
   </ItemGroup>

@@ -204,6 +204,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\TitchyCotageApi - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\TitchyCottage - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\TitchyCottageWepApi - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
@@ -269,6 +270,10 @@
     <ProjectReference Include="..\TitchyCottage.Service\TitchyCottage.Service.csproj">
       <Project>{b8336061-eec9-41c4-844d-f7d11e99ab05}</Project>
       <Name>TitchyCottage.Service</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TitchyCottage.Utility\TitchyCottage.Utility.csproj">
+      <Project>{32139556-3803-43bb-bd20-d5f61d73c4cf}</Project>
+      <Name>TitchyCottage.Utility</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

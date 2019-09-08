@@ -89,7 +89,8 @@ namespace TitchyCottage.Service.Products
                                    {
                                        ProductID = item.ProductID,
                                        ProductName =item.ProductName,
-                                       ProductDescription = item.ProductDescription
+                                       ProductDescription = item.ProductDescription,
+                                       Cost = item.Cost
                                    }).ToList();
                     result.success = true;
                 }
@@ -136,21 +137,42 @@ namespace TitchyCottage.Service.Products
             {
                 using (var context = new TitchyCottageEntities())
                 {
-                    ProductQuantity qty = context.GetProductQuantityByID(ID).FirstOrDefault();
+                    List<ProductQuantity> productQty = context.GetProductQuantityByID(ID).ToList();
 
-                    result.Data = new ProductQuantityModel
-                    {
-                       ID = qty.ID,
-                       DateCode = qty.DateCode,
-                       ExpiredDate = qty.ExpiredDate,
-                       Lot = qty.Lot,
-                       ManufacturerDate = qty.ManufacturerDate,
-                       ProductID = qty.ProductID,
-                       ShopInQuantity = qty.ShopInQuantity,
-                       SoldOutQuantity = qty.SoldOutQuantity,
-                       StockInQuantity = qty.ShopInQuantity,
-                       TotalQuantity = qty.TotalQuantity
-                    };
+                    List<Product> product = context.GetProducts().ToList();
+
+                    result.Data = (from qty in productQty
+                                   join p in product on qty.ProductID equals (p.ProductID)
+                                   select new ProductQuantityModel
+                                   {
+                                       ID = qty.ID,
+                                       ProductID = qty.ProductID,
+                                       ProductName = p.ProductName,
+                                       DateCode = qty.DateCode,
+                                       ExpiredDate = qty.ExpiredDate,
+                                       Lot = qty.Lot,
+                                       ManufacturerDate = qty.ManufacturerDate,
+                                       ShopInQuantity = qty.ShopInQuantity ?? 0,
+                                       SoldOutQuantity = qty.SoldOutQuantity ?? 0,
+                                       StockInQuantity = qty.ShopInQuantity ?? 0,
+                                       TotalQuantity = qty.TotalQuantity ?? 0
+                                   }).ToList().FirstOrDefault();
+
+                    //ProductQuantity qty = context.GetProductQuantityByID(ID).FirstOrDefault();
+
+                    //result.Data = new ProductQuantityModel
+                    //{
+                    //   ID = qty.ID,
+                    //   DateCode = qty.DateCode,
+                    //   ExpiredDate = qty.ExpiredDate,
+                    //   Lot = qty.Lot,
+                    //   ManufacturerDate = qty.ManufacturerDate,
+                    //   ProductID = qty.ProductID,
+                    //   ShopInQuantity = qty.ShopInQuantity??0,
+                    //   SoldOutQuantity = qty.SoldOutQuantity??0,
+                    //   StockInQuantity = qty.ShopInQuantity??0,
+                    //   TotalQuantity = qty.TotalQuantity??0
+                    //};
                     result.success = true;
                 }
 
@@ -171,21 +193,25 @@ namespace TitchyCottage.Service.Products
             {
                 using (var context = new TitchyCottageEntities())
                 {
-                    List<ProductQuantity> product = context.GetProductsQuantity().ToList();
+                    List<ProductQuantity> productQty = context.GetProductsQuantity().ToList();
 
-                    result.Data = (from qty in product
+                    List<Product> product = context.GetProducts().ToList();
+
+                    result.Data = (from qty in productQty
+                                   join p in product on qty.ProductID equals(p.ProductID)
                                    select new ProductQuantityModel
                                    {
                                        ID = qty.ID,
+                                       ProductID =qty.ProductID,
+                                       ProductName =p.ProductName,
                                        DateCode = qty.DateCode,
                                        ExpiredDate = qty.ExpiredDate,
                                        Lot = qty.Lot,
                                        ManufacturerDate = qty.ManufacturerDate,
-                                       ProductID = qty.ProductID,
-                                       ShopInQuantity = qty.ShopInQuantity,
-                                       SoldOutQuantity = qty.SoldOutQuantity,
-                                       StockInQuantity = qty.ShopInQuantity,
-                                       TotalQuantity = qty.TotalQuantity
+                                       ShopInQuantity = qty.ShopInQuantity??0,
+                                       SoldOutQuantity = qty.SoldOutQuantity??0,
+                                       StockInQuantity = qty.ShopInQuantity??0,
+                                       TotalQuantity = qty.TotalQuantity??0
                                    }).ToList();
                     result.success = true;
                 }

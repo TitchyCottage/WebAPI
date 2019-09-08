@@ -10,6 +10,7 @@ namespace TitchyCottage.Service
     {
         public long ID { get; set; }
         public int ProductID { get; set; }
+        public string ProductName { get; set; }
         public string Lot { get; set; }
         public string DateCode { get; set; }
         public decimal? TotalQuantity { get; set; }

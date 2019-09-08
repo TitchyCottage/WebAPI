@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Claims;
+using System.Web;
 using System.Web.Http;
 using TitchyCottage.Service;
 using TitchyCottage.Service.Products;
@@ -13,9 +15,11 @@ namespace TitchyCottage.Api.Controllers
     public class ProductController : ApiController
     {
         private ProductService _product;
+        private string userId = string.Empty;
         public ProductController()
         {
             _product = new ProductService();
+            userId = ((ClaimsIdentity)HttpContext.Current.User.Identity).FindFirst("UserId") != null ? ((ClaimsIdentity)HttpContext.Current.User.Identity).FindFirst("UserId").Value : string.Empty;
         }
 
         [Route("AddOrUpdateProduct")]
@@ -50,6 +54,7 @@ namespace TitchyCottage.Api.Controllers
             {
                 return BadRequest(ModelState);
             }
+            request.CreatedBy = userId;
             return Ok(_product.AddOrUpdateProductQuantity(request));
 
         }

@@ -24,16 +24,20 @@ namespace TitchyCottage.Security.Repository
             _userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new AuthContext()));
         }
 
-        public async Task<IdentityResult> RegisterUser(ApplicationUser userModel,string password,  string[] roles)
+        public async Task<IdentityResult> RegisterUser(ApplicationUser userModel,string password,  string role)
         {
 
             try
             {
+                userModel.Type = role == Convert.ToString(Type.Admin) ? (int)Type.Admin:
+                    role == Convert.ToString(Type.Distributor) ? (int)Type.Distributor :
+                    role == Convert.ToString(Type.Manufacturer) ? (int)Type.Manufacturer : (int)Type.Retailer;
+
                 var result = await _userManager.CreateAsync(userModel, password);
                 var user = await _userManager.FindByEmailAsync(userModel.Email);
                 if (user != null && result.Succeeded)
                 {
-                    result = await _userManager.AddToRolesAsync(user.Id, roles);
+                    result = await _userManager.AddToRoleAsync(user.Id, role);
                 }
                 return result;
             }
@@ -96,7 +100,7 @@ namespace TitchyCottage.Security.Repository
             return result;
         }
 
-        public async Task<IdentityResult> UpdateUserAsync(ApplicationUser userModel, string[] roles)
+        public async Task<IdentityResult> UpdateUserAsync(ApplicationUser userModel, string role)
         {
             try
             {
@@ -118,22 +122,27 @@ namespace TitchyCottage.Security.Repository
                     user.Type = userModel.Type;
                     user.ModifiedBy = userModel.ModifiedBy;
                     user.ModifiedDate = userModel.ModifiedDate;
+
+                    user.Type = role == Convert.ToString(Type.Admin) ? (int)Type.Admin :
+                    role == Convert.ToString(Type.Distributor) ? (int)Type.Distributor :
+                    role == Convert.ToString(Type.Manufacturer) ? (int)Type.Manufacturer : (int)Type.Retailer;
                 }
                 var result = await _userManager.UpdateAsync(user);
-                if (result.Succeeded && roles.Length > 0)
+                if (result.Succeeded && !string.IsNullOrWhiteSpace(role))
                 {
-                    var oldRoles = new List<string>();
-                    foreach(var item in user.Roles)
+                    //var oldRoles = new List<string>();
+                    //foreach(var item in user.Roles)
+                    //{
+                    //    oldRoles.Add(item.RoleId == Convert.ToString((int)Type.Admin) ? Convert.ToString(Type.Admin) : item.RoleId == Convert.ToString((int)Type.Distributor) ? Convert.ToString(Type.Distributor) : Convert.ToString(Type.Retailer));
+                    //}
+
+                    if (user.Roles.Any())
                     {
-                        oldRoles.Add(item.RoleId == Convert.ToString((int)Type.Admin) ? Convert.ToString(Type.Admin) : item.RoleId == Convert.ToString((int)Type.Distributor) ? Convert.ToString(Type.Distributor) : Convert.ToString(Type.Retailer));
+                        var roleString = user.Roles.First().RoleId;
+                        await _userManager.RemoveFromRoleAsync(user.Id, roleString == Convert.ToString((int)Type.Admin) ? Convert.ToString(Type.Admin) : roleString == Convert.ToString((int)Type.Distributor) ? Convert.ToString(Type.Distributor): roleString == Convert.ToString((int)Type.Manufacturer) ? Convert.ToString(Type.Manufacturer) : Convert.ToString(Type.Retailer));
                     }
 
-                    if (oldRoles.Any())
-                    {
-                        await _userManager.RemoveFromRolesAsync(user.Id, oldRoles.ToArray());
-                    }
-
-                    result = await _userManager.AddToRolesAsync(user.Id,roles);
+                    result = await _userManager.AddToRoleAsync(user.Id,role);
                 }
                 return result;
             }
@@ -152,8 +161,18 @@ namespace TitchyCottage.Security.Repository
             {
                 new TitchyCottageType
                 {
+                    Id = (int)Type.Admin,
+                    Value = Type.Admin.ToString()
+                },
+                new TitchyCottageType
+                {
                     Id = (int)Type.Distributor,
                     Value = Type.Distributor.ToString()
+                },
+                new TitchyCottageType
+                {
+                    Id = (int)Type.Manufacturer,
+                    Value = Type.Manufacturer.ToString()
                 },
                 new TitchyCottageType
                 {

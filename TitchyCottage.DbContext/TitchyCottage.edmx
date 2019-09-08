@@ -193,6 +193,12 @@
         </Function>
         <Function Name="GetProducts" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="GetProductsQuantity" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="GetShopInformationForDistibutor" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="user" Type="varchar" Mode="In" />
+          <Parameter Name="productName" Type="varchar" Mode="In" />
+          <Parameter Name="lot" Type="varchar" Mode="In" />
+          <Parameter Name="expiredDate" Type="datetime" Mode="In" />
+        </Function>
         <EntityContainer Name="TitchyCottageModelStoreContainer">
           <EntitySet Name="ProductQuantity" EntityType="Self.ProductQuantity" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Products" EntityType="Self.Products" Schema="dbo" store:Type="Tables" />
@@ -350,6 +356,12 @@
             <End Role="ProductQuantity" EntitySet="ProductQuantities" />
             <End Role="ProductTransactionHistory" EntitySet="ProductTransactionHistories" />
           </AssociationSet>
+          <FunctionImport Name="GetShopInformationForDistibutor" ReturnType="Collection(TitchyCottageModel.GetShopInformationForDistibutor_Result)">
+          <Parameter Name="user" Mode="In" Type="String" />
+            <Parameter Name="productName" Mode="In" Type="String" />
+            <Parameter Name="lot" Mode="In" Type="String" />
+            <Parameter Name="expiredDate" Mode="In" Type="DateTime" />
+          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="GetProductByID_Result">
           <Property Type="Int32" Name="ProductID" Nullable="false" />
@@ -475,6 +487,16 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <ComplexType Name="GetShopInformationForDistibutor_Result">
+          <Property Type="String" Name="ShopName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="ProductName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Lot" Nullable="true" MaxLength="250" />
+          <Property Type="DateTime" Name="ManufacturerDate" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="ExpiredDate" Nullable="true" Precision="23" />
+          <Property Type="Decimal" Name="TotalQuantity" Nullable="false" Precision="18" Scale="0" />
+          <Property Type="Decimal" Name="StockInQuantity" Nullable="false" Precision="18" Scale="0" />
+          <Property Type="Decimal" Name="SoldOutQuantity" Nullable="true" Precision="18" Scale="0" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -586,6 +608,20 @@
           <FunctionImportMapping FunctionImportName="GetProductQuantityByID" FunctionName="TitchyCottageModel.Store.GetProductQuantityByID">
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="GetProductsQuantity" FunctionName="TitchyCottageModel.Store.GetProductsQuantity">
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetShopInformationForDistibutor" FunctionName="TitchyCottageModel.Store.GetShopInformationForDistibutor">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="TitchyCottageModel.GetShopInformationForDistibutor_Result">
+                <ScalarProperty Name="ShopName" ColumnName="ShopName" />
+                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+                <ScalarProperty Name="Lot" ColumnName="Lot" />
+                <ScalarProperty Name="ManufacturerDate" ColumnName="ManufacturerDate" />
+                <ScalarProperty Name="ExpiredDate" ColumnName="ExpiredDate" />
+                <ScalarProperty Name="TotalQuantity" ColumnName="TotalQuantity" />
+                <ScalarProperty Name="StockInQuantity" ColumnName="StockInQuantity" />
+                <ScalarProperty Name="SoldOutQuantity" ColumnName="SoldOutQuantity" />
+              </ComplexTypeMapping>
+            </ResultMapping>
           </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>

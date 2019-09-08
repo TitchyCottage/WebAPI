@@ -63,6 +63,9 @@
     <Compile Include="GetProducts_Result.cs">
       <DependentUpon>TitchyCottage.tt</DependentUpon>
     </Compile>
+    <Compile Include="GetShopInformationForDistibutor_Result.cs">
+      <DependentUpon>TitchyCottage.tt</DependentUpon>
+    </Compile>
     <Compile Include="Product.cs">
       <DependentUpon>TitchyCottage.tt</DependentUpon>
     </Compile>
