@@ -232,7 +232,7 @@ namespace TitchyCottage.Api.Controllers
         [Route("GetRetailerByDistributor")]
         public IHttpActionResult GetRetailerByDistributor()
         {
-            ResultListModel<ApplicationUser> result = _repo.GetRetailerByDistributor(userId);
+            ResultListModel<ApplicationUser> result = _repo.GetRetailerByDistributor();
             ResultListModel<RegisterViewModel> response = new ResultListModel<RegisterViewModel>();
             if (result.success)
             {

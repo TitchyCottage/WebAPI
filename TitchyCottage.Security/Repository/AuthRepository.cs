@@ -83,12 +83,12 @@ namespace TitchyCottage.Security.Repository
             return result;
         }
 
-        public ResultListModel<ApplicationUser> GetRetailerByDistributor(string userId)
+        public ResultListModel<ApplicationUser> GetRetailerByDistributor()
         {
             ResultListModel<ApplicationUser> result = new ResultListModel<ApplicationUser>();
             try
             {
-                var data = _ctx.Users.Where(_ => _.Type == (int)Type.Retailer && _.CreatedBy == userId).ToList();
+                var data = _ctx.Users.Where(_ => _.Type == (int)Type.Retailer && _.IsActive).ToList();
                 result.Data = data;
                 result.success = true;
             }

@@ -16,6 +16,7 @@ namespace TitchyCottage.Api.Models
         public string FirstName { get; set; }
         [MaxLength(50)]
         public string LastName { get; set; }
+        public string FullName { get; set; }
         [MaxLength(50)]
         public string Password { get; set; }
         [MaxLength(50)]
@@ -55,6 +56,7 @@ namespace TitchyCottage.Api.Models
             //UserName = poco.UserName;
             FirstName = poco.FirstName;
             LastName = poco.LastName;
+            FullName = string.Concat(poco.FirstName, " ", poco.LastName);
             Email = poco.Email;
             PhoneNumber = poco.PhoneNumber;
             ShopName = poco.ShopName;

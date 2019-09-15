@@ -10,7 +10,7 @@ using TitchyCottage.Service.Transaction;
 
 namespace TitchyCottage.Api.Controllers
 {
-    [RoutePrefix("api/Product")]
+    [RoutePrefix("api/Transaction")]
     public class TransactionController : ApiController
     {
         private TransactionService _transaction;
@@ -22,22 +22,32 @@ namespace TitchyCottage.Api.Controllers
         }
 
         [Route("CheckInByShop")]
+        [HttpPost]
         public IHttpActionResult CheckInByShop(ShopTransactionModel request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+            if (string.IsNullOrWhiteSpace(request.CreatedBy))
+            {
+                request.CreatedBy = userId;
+            }
             return Ok(_transaction.CheckInByShop(request));
 
         }
 
         [Route("CheckOutFromShop")]
+        [HttpPost]
         public IHttpActionResult CheckOutFromShop(CheckOutRequestModel request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            }
+            if (string.IsNullOrWhiteSpace(request.CreatedBy))
+            {
+                request.CreatedBy = userId;
             }
             return Ok(_transaction.CheckOutFromShop(request));
 

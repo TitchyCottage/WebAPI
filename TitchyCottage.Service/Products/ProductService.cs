@@ -114,6 +114,7 @@ namespace TitchyCottage.Service.Products
                 using (var context = new TitchyCottageEntities())
                 {
 
+                    Qty.DateCode = DateTime.Now.ToString("MMddyyyy");
                     context.AddOrUpdateProductQuantity(Qty.ID, Qty.ProductID, Qty.Lot, Qty.DateCode, Qty.TotalQuantity, Qty.ExpiredDate, Qty.ManufacturerDate,Qty.CreatedBy);
                     result.Message = string.Concat(Qty.TotalQuantity.ToString(), " ", "Quantity has been added successfully.");
                     result.success = true;
@@ -154,7 +155,7 @@ namespace TitchyCottage.Service.Products
                                        ManufacturerDate = qty.ManufacturerDate,
                                        ShopInQuantity = qty.ShopInQuantity ?? 0,
                                        SoldOutQuantity = qty.SoldOutQuantity ?? 0,
-                                       StockInQuantity = qty.ShopInQuantity ?? 0,
+                                       StockInQuantity = qty.StockInQuantity ?? 0,
                                        TotalQuantity = qty.TotalQuantity ?? 0
                                    }).ToList().FirstOrDefault();
 
@@ -210,7 +211,7 @@ namespace TitchyCottage.Service.Products
                                        ManufacturerDate = qty.ManufacturerDate,
                                        ShopInQuantity = qty.ShopInQuantity??0,
                                        SoldOutQuantity = qty.SoldOutQuantity??0,
-                                       StockInQuantity = qty.ShopInQuantity??0,
+                                       StockInQuantity = qty.StockInQuantity??0,
                                        TotalQuantity = qty.TotalQuantity??0
                                    }).ToList();
                     result.success = true;
